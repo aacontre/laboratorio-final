@@ -5,7 +5,3 @@ on:
     branches: [feat-movie]
   pull_request:
     branches: [feat-movie]
-
-jobs:
-  devsecops:
-    runs-on: ubuntu-latest

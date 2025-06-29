@@ -3,7 +3,7 @@ name: Pipeline Laboratorio Final
 on:
   push:
     branches:
-       -feat-movie
+      - feat-movie  # Corregido: espacio después del guión
 
 jobs:
   Despliegue:
@@ -16,28 +16,35 @@ jobs:
           python-version: '3.10'
 
       - name: Clonando repositorio
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  
 
-      - name : Build
+      - name: Build  
         run: |
-          chmod 777 gradlew
+          chmod 777 gradlew  # Precaución: 777 da permisos totales (puede ser inseguro)
           # pip install -r requirements.txt
           
       - name: Validando existencia de proyecto en SonarCloud
-      id: validateProjectOnSonar
-      run: |
-        #pwd
-        #ls -R
-        set +e
-        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=laboratorio-final-movie' -d 'visibility=public'
-        if [ $? -ne 0 ]; then
-          echo "Proyecto ya existe en Sonarcloud"
-          echo "::set-output name=proyectoExiste::1"
-        else
-          echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
+        id: validateProjectOnSonar  
+        run: |
+          #pwd
+          #ls -R
+          set +e
+          curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' \
+            -d 'name=${{ github.event.repository.name }}' \
+            -d 'project=${{ github.event.repository.name }}' \
+            -d 'organization=laboratorio-final-movie' \
+            -d 'visibility=public'
           
-          echo "Se establece rama main como rama por defecto"
-          curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
-        fi
-        set -e
+          if [ $? -ne 0 ]; then
+            echo "Proyecto ya existe en Sonarcloud"
+            echo "proyectoExiste=1" >> $GITHUB_OUTPUT  # Corregido: nuevo formato para outputs
+          else
+            echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
+            echo "Se establece rama main como rama por defecto"
+            curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' \
+              'https://sonarcloud.io/api/project_branches/rename' \
+              -d 'name=main' \
+              -d 'project=${{ github.event.repository.name }}'
+          fi
+          set -e
     

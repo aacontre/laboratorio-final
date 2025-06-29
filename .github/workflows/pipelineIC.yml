@@ -22,10 +22,11 @@ jobs:
         run: |
          chmod 777 gradlew
         # pip install -r requirements.txt
+          ./gradlew build
 
       - name: Validando existencia de proyecto en SonarCloud
-        id: validateProjectOnSonar
-        run: |
+      id: validateProjectOnSonar
+      run: |
         #pwd
         #ls -R
         set +e
@@ -35,8 +36,9 @@ jobs:
           echo "::set-output name=proyectoExiste::1"
         else
           echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
-           
+          
           echo "Se establece rama main como rama por defecto"
           curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
         fi
         set -e
+    

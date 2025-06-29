@@ -2,8 +2,8 @@ name: Pipeline Laboratorio Final
 
 on:
   push:
-  branches:
-        - feat-movie
+    branches:
+       -feat-movie
 
 jobs:
   Despliegue:

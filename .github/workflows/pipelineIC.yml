@@ -10,7 +10,13 @@ jobs:
   devsecops:
     runs-on: ubuntu-latest
 
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_PROJECT_KEY: laboratorio-final
-      SONAR_ORG: laboratorio-final-movie
+    steps:
+      - name: Clonando repositorio
+        uses: actions/checkout@v3
+
+        name: Version Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+       

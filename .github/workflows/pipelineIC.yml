@@ -20,7 +20,8 @@ jobs:
 
       - name: Build  
         run: |
-          chmod 777 gradlew  # Precaución: 777 da permisos totales (puede ser inseguro)
+          chmod 777 gradlew
+          ./gradlew build
           # pip install -r requirements.txt
           
       - name: Validando existencia de proyecto en SonarCloud

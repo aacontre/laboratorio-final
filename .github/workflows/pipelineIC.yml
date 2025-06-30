@@ -3,8 +3,6 @@ on:
   push:
     branches: 
       - feat-movie
-  pull_request:
-    branches: [ main ]
 
 env:
   APP_NAME: "movies-app"

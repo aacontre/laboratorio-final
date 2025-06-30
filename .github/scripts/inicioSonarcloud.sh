@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#validando parametros
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+  echo "Error: Faltan parámetros"
+  echo "Uso: $0 <SONAR_TOKEN> <PROJECT_NAME> <ORGANIZATION>"
+  exit 1
+fi
 # Configuración de variables (las variables de GitHub Actions se pasan como argumentos)
 SONAR_TOKEN="$1"
 PROJECT_NAME="$2"

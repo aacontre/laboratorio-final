@@ -1,45 +1,37 @@
-name: Pipeline movoie
+name: DevSecOps Pipeline - Laboratorio Final
+
 on:
   push:
-    branches: 
-      - feat-movie
-
-env:
-  APP_NAME: "movies-app"
-  IMAGE_TAG: "latest"
-  SONAR_PROJECT_KEY: "laboratorio-final"
+    branches:
+      - feat-sast
 
 jobs:
-  security-pipeline:
-    name: Security Pipeline
+  clone-repository:
+    name: Clonar repositorio y preparar entorno
     runs-on: ubuntu-latest
     
     steps:
-    # 1. Clonación del repositorio
+    # Paso 1: Clonación del repositorio
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Necesario para SonarCloud
+        fetch-depth: 0  # Clona todo el historial de commits
+        path: src      # Opcional: clona en un subdirectorio específico
 
-    # 2. SAST con SonarCloud
-    - name: Set up Java for SonarScanner
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.qualitygate.wait=true
-          -Dsonar.qualitygate.timeout=600
-          -Dsonar.qualitygate.failOnMedium=true
-          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
-          -Dsonar.organization=devsecops-usash
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.python.version=3.9
-          -Dsonar.sources=app/
-          -Dsonar.exclusions=**/tests/**
+    # Verificación de la clonación (opcional)
+    - name: Verify repository structure
+      run: |
+        echo "Contenido del repositorio clonado:"
+        ls -la src/
+        echo ""
+        echo "Estructura de directorios:"
+        tree -L 2 src/
+        
+    # Configuración inicial del entorno (opcional)
+    - name: Set up environment
+      run: |
+        echo "Configurando entorno de trabajo..."
+        cd src
+        echo "Ruta actual: $(pwd)"
+        echo "Versión de Python: $(python --version || echo 'Python no encontrado')"
+        echo "Versión de Docker: $(docker --version || echo 'Docker no encontrado')"

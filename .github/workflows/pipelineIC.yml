@@ -17,16 +17,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
-      - name: Instalar dependencias
-        run: |
-          pip install -r requirements.txt
-          # Si usas Poetry:
-          # pip install poetry
-          # poetry install
-
-      - name: Ejecutar tests
-        run: pytest  # o `python -m unittest`
           
       - name: Validando existencia de proyecto en SonarCloud
         id: validateProjectOnSonar

@@ -26,7 +26,7 @@ jobs:
     - name: Set up Java for SonarScanner
       uses: actions/setup-java@v3
       with:
-        distribution: 'zulu'
+        distribution: 'temurin'
         java-version: '17'
 
     - name: SonarCloud Scan

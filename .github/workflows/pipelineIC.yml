@@ -46,7 +46,7 @@ jobs:
       id: sonar-setup
       run: |
         chmod 777 .github/scripts/inicioSonarcloud.sh
-        .github/scripts/inicioSonarcloud.sh \
+        ./.github/scripts/inicioSonarcloud.sh \
         "${{ secrets.SONAR_TOKEN }}" \
         "${{ github.event.repository.name }}" \
         "olimpo"

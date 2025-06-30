@@ -1,7 +1,4 @@
 #!/bin/bash
-
-
-# Configuración de variables
 SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}"
 PROJECT_NAME="${{ github.event.repository.name }}"
 ORGANIZATION="olimpo"

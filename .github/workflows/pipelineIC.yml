@@ -1,7 +1,8 @@
 name: Pipeline movoie
 on:
   push:
-    branches: [ main, feature/devsecops-pipeline ]
+    branches: 
+      - feat-movie
   pull_request:
     branches: [ main ]
 

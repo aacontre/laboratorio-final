@@ -1,7 +1,9 @@
 #!/bin/bash
-SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}"
-PROJECT_NAME="${{ github.event.repository.name }}"
-ORGANIZATION="olimpo"
+
+# Configuración de variables (las variables de GitHub Actions se pasan como argumentos)
+SONAR_TOKEN="$1"
+PROJECT_NAME="$2"
+ORGANIZATION="$3"
 
 # Función para verificar si el proyecto existe
 check_project_exists() {

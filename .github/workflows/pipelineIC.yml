@@ -42,17 +42,17 @@ jobs:
         echo "Versión de Python: $(python --version || echo 'Python no encontrado')"
         echo "Versión de Docker: $(docker --version || echo 'Docker no encontrado')"
 
-
     - name: Setup SonarCloud project
       id: sonar-setup
       run: |
+        chmod +x .github/scripts/inicioSonarcloud.sh
         .github/scripts/inicioSonarcloud.sh \
         "${{ secrets.SONAR_TOKEN }}" \
         "${{ github.event.repository.name }}" \
-        "olimpo"          
-
-    - name: Use project status
-      if: steps.sonar-setup.outputs.proyectoExiste == '0'
-      run: echo "Proyecto nuevo creado"
+        "olimpo"
+            
+    - name: Handle result
+      run: |
+          echo "Project exists: ${{ steps.sonar-setup.outputs.proyectoExiste }}"
 
         

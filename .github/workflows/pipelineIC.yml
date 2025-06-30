@@ -3,7 +3,7 @@ name: DevSecOps Pipeline - Laboratorio Final
 on:
   push:
     branches:
-      - feat-sast
+      - feat-movie
 
 jobs:
   clone-repository:

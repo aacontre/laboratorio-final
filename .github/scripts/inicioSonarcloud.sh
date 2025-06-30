@@ -35,7 +35,7 @@ else
     echo "Configurando rama main como rama por defecto..."
     curl -X POST -u "${SONAR_TOKEN}:" \
       "https://sonarcloud.io/api/project_branches/rename" \
-      -d "name=main" \
+      -d "name=feat-movie" \
       -d "project=${PROJECT_NAME}"
   fi
 fi

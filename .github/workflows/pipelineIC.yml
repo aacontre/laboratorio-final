@@ -49,7 +49,7 @@ jobs:
         #pwd
         #ls -R
         set +e
-        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=devsecopsusach' -d 'visibility=public'
+        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=olimpo' -d 'visibility=public'
         if [ $? -ne 0 ]; then
           echo "Proyecto ya existe en Sonarcloud"
           echo "::set-output name=proyectoExiste::1"

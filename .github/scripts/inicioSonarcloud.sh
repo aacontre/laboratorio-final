@@ -1,9 +1,10 @@
 #!/bin/bash
 
+
 # Configuración de variables
-SONAR_TOKEN="$1"
-PROJECT_NAME="$2"
-ORGANIZATION="$3"
+SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}"
+PROJECT_NAME="${{ github.event.repository.name }}"
+ORGANIZATION="olimpo"
 
 # Función para verificar si el proyecto existe
 check_project_exists() {

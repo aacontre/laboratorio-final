@@ -10,6 +10,12 @@ jobs:
     name: Clonar repositorio y preparar entorno
     runs-on: ubuntu-latest
     
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_PROJECT_KEY: laboratorio-final
+      SONAR_ORG: olimpo 
+
+
     steps:
     
     - name: Checkout repository
@@ -21,7 +27,7 @@ jobs:
     
     - name: Verify repository structure
       run: |
-        echo "Contenido del repositorio clonado:"
+        echo "Repositorio clonado:"
         ls -la src/
         echo ""
         echo "Estructura de directorios:"
@@ -30,8 +36,10 @@ jobs:
    
     - name: Set up environment
       run: |
-        echo "Configurando entorno de trabajo..."
+        echo "Entorno de trabajo..."
         cd src
         echo "Ruta actual: $(pwd)"
         echo "Versión de Python: $(python --version || echo 'Python no encontrado')"
         echo "Versión de Docker: $(docker --version || echo 'Docker no encontrado')"
+
+        

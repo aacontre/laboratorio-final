@@ -1,4 +1,4 @@
-name: DevSecOps Pipeline - Laboratorio Final
+name: Pipeline - Laboratorio Final
 
 on:
   push:
@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # Paso 1: Clonación del repositorio
+    
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Clona todo el historial de commits
-        path: src      # Opcional: clona en un subdirectorio específico
+        fetch-depth: 0  
+        path: src      
 
-    # Verificación de la clonación (opcional)
+    
     - name: Verify repository structure
       run: |
         echo "Contenido del repositorio clonado:"
@@ -27,7 +27,7 @@ jobs:
         echo "Estructura de directorios:"
         tree -L 2 src/
         
-    # Configuración inicial del entorno (opcional)
+   
     - name: Set up environment
       run: |
         echo "Configurando entorno de trabajo..."

@@ -26,7 +26,7 @@ jobs:
             'https://sonarcloud.io/api/projects/create' \
             -d 'name=${{ github.event.repository.name }}' \
             -d 'project=${{ github.event.repository.name }}' \
-            -d 'organization=laboratorio-final-movie' \
+            -d 'organization=devsecops-usash' \
             -d 'visibility=public'
           
           if [ $? -ne 0 ]; then

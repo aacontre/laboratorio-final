@@ -13,29 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  
 
-      - name: Set up Python
+      - name: Configurar Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Find gradlew file  
+      - name: Instalar dependencias
         run: |
-          echo "Contenido del directorio:"
-          ls -la
-          echo "Buscando gradlew..."
-          find . -name gradlew -type f
+          pip install -r requirements.txt
+          # Si usas Poetry:
+          # pip install poetry
+          # poetry install
 
-      - name: Build
-        run: |
-          # Verifica si gradlew existe antes de cambiar permisos
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew  # Usar +x en lugar de 777 por seguridad
-            ./gradlew build
-          else
-            echo "Error: archivo gradlew no encontrado en la raíz del proyecto"
-            echo "Por favor asegúrate de que el archivo gradlew exista y esté commitado"
-            exit 1
-          fi
+      - name: Ejecutar tests
+        run: pytest  # o `python -m unittest`
           
       - name: Validando existencia de proyecto en SonarCloud
         id: validateProjectOnSonar

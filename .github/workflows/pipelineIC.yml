@@ -1,37 +1,46 @@
-name: Pipeline Laboratorio Final
-
+name: Pipeline movoie
 on:
   push:
-    branches:
-      - feat-movie
+    branches: [ main, feature/devsecops-pipeline ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  APP_NAME: "movies-app"
+  IMAGE_TAG: "latest"
+  SONAR_PROJECT_KEY: "laboratorio-final"
 
 jobs:
-  Despliegue:
+  security-pipeline:
+    name: Security Pipeline
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  
+    # 1. Clonación del repositorio
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Necesario para SonarCloud
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          
-      - name: Instalar SonarScanner
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-          unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-          echo "$PWD/sonar-scanner-4.8.0.2856-linux/bin" >> $GITHUB_PATH
-          
-      - name: Run SonarCloud Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner \
-            -Dsonar.organization=devsecops-usash \
-            -Dsonar.projectKey=labaratorio-final \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=https://sonarcloud.io
+    # 2. SAST con SonarCloud
+    - name: Set up Java for SonarScanner
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.timeout=600
+          -Dsonar.qualitygate.failOnMedium=true
+          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=devsecops-usash
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.python.version=3.9
+          -Dsonar.sources=app/
+          -Dsonar.exclusions=**/tests/**

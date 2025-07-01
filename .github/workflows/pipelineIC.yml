@@ -6,53 +6,30 @@ on:
       - feat-movie
 
 jobs:
-  clone-repository:
-    name: Clonar repositorio y preparar entorno
-    runs-on: ubuntu-latest
-    
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_PROJECT_KEY: laboratorio-final
-      SONAR_ORG: olimpo 
-
+  sonarcloud_analysis:
+    name: SAST
+    runs-on: ubuntu-latest # Usa el último runner de Ubuntu
 
     steps:
-    
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  
-        path: src      
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          # Obtiene todo el historial para datos SCM precisos (blame, fechas de creación de issues)
+          fetch-depth: 0
 
-    
-    - name: Verify repository structure
-      run: |
-        echo "Repositorio clonado:"
-        ls -la src/
-        echo ""
-        echo "Estructura de directorios:"
-        tree -L 2 src/
-        
-   
-    - name: Set up environment
-      run: |
-        echo "Entorno de trabajo..."
-        cd src
-        echo "Ruta actual: $(pwd)"
-        echo "Versión de Python: $(python --version || echo 'Python no encontrado')"
-        echo "Versión de Docker: $(docker --version || echo 'Docker no encontrado')"
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9' # O la versión de Python que use tu aplicación
 
-    - name: Setup SonarCloud project
-      id: sonar-setup
-      run: |
-        chmod 777 .github/scripts/inicioSonarcloud.sh
-        ./.github/scripts/inicioSonarcloud.sh \
-        "${{ secrets.SONAR_TOKEN }}" \
-        "${{ github.event.repository.name }}" \
-        "olimpo"
-            
-    - name: Handle result
-      run: |
-          echo "Project exists: ${{ steps.sonar-setup.outputs.proyectoExiste }}"
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov # Instala herramientas de prueba y cobertura
+
+      - name: Ejecutar pruebas y recolectar cobertura
+        run: |
+          pytest --cov=. --cov-report=xml # Genera informe de cobertura en formato XML
 
         

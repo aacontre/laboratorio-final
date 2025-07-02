@@ -47,4 +47,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            sonar-scanner -Dsonar.projectKey=aacontre-laboratorio-final -Dsonar.projectName="Laboratorio Final" -Dsonar.organization=aacontreGithub -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.projectKey=aacontre-laboratorio-final
+            -Dsonar.projectName="Laboratorio Final"
+            -Dsonar.organization=aacontreGithub
+            -Dsonar.host.url=https://sonarcloud.io

@@ -30,7 +30,7 @@ jobs:
 
       # --- 2. Ejecutar SAST (Static Application Security Testing) ---
       - name: 2. Análisis SAST con SonarCloud
-        if: secrets.SONAR_TOKEN && secrets.GITHUB_TOKEN
+        if: ${{ secrets.SONAR_TOKEN && secrets.GITHUB_TOKEN }}
         uses: SonarSource/sonarcloud-github-action@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token automático de GitHub para integración

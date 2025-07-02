@@ -47,7 +47,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectKey: ${{ github.event.repository.name }}
-          organization: aacontre
+          organization: aacontreGithub
           hostUrl: https://sonarcloud.io
           sonarLogin: ${{ secrets.SONAR_TOKEN }}
           branchName: main

@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest # Usa el último runner de Ubuntu
     env:
       APP_PATH: 'src' # Asegúrate de que esta ruta apunte al directorio correcto de tu aplicación
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     steps:
       - name: Descargar repositorio
@@ -30,7 +32,7 @@ jobs:
 
       # --- 2. Ejecutar SAST (Static Application Security Testing) ---
       - name: 2. Análisis SAST con SonarCloud
-        if: ${{ secrets.SONAR_TOKEN && secrets.GITHUB_TOKEN }}
+        if: env.SONAR_TOKEN != ''
         uses: SonarSource/sonarcloud-github-action@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token automático de GitHub para integración

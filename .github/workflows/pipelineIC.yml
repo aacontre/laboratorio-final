@@ -8,38 +8,35 @@ on:
 jobs:
   sonarcloud_analysis:
     name: SAST
-    runs-on: ubuntu-latest # Usa el último runner de Ubuntu
+    runs-on: ubuntu-latest
     env:
-      APP_PATH: 'src' # Asegúrate de que esta ruta apunte al directorio correcto de tu aplicación
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      APP_PATH: 'src'
       
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
         with:
-          # Obtiene todo el historial para datos SCM precisos (blame, fechas de creación de issues)
           fetch-depth: 0
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9' # O la versión de Python que use tu aplicación
+          python-version: '3.9'
           
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
+          pip install sonar-scanner-cli
 
-      # --- 2. Ejecutar SAST (Static Application Security Testing) ---
       - name: 2. Análisis SAST con SonarCloud
-        if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarcloud-github-action@v2.2.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token automático de GitHub para integración
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Tu token de SonarCloud (debe ser un secreto en GitHub)
-        with:
-          projectKey: 'laboratorio final' # <--- ¡¡REEMPLAZA ESTO CON TU CLAVE DE PROYECTO EN SONARCLOUD!!
-          organization: 'aacontre'       # <--- ¡¡REEMPLAZA ESTO CON LA CLAVE DE TU ORGANIZACIÓN EN SONARCLOUD!!
-          args: >
-            -Dsonar.sources=${{ env.APP_PATH }} # Asegura que SonarCloud escanee el código de tu aplicación
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=aacontre\
+            -Dsonar.organization=aacontreGithub \
+            -Dsonar.sources=${{ env.APP_PATH }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.sourceEncoding=UTF-8

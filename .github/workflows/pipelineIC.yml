@@ -41,7 +41,7 @@ jobs:
           sonar-scanner --version || echo "SonarScanner no se instaló correctamente"
 
       - name: 2. Análisis SAST con SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

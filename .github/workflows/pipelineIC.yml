@@ -32,6 +32,5 @@ jobs:
         with:
           args: >
               -Dsonar.projectKey=laboratorio-final
-              -Dsonar.projectName=laboratorio-final
               -Dsonar.organization=aacontre
               -Dsonar.host.url=https://sonarcloud.io

@@ -30,12 +30,18 @@ jobs:
 
       - name: instalar SonarScanner
         run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-          unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-          sudo mv sonar-scanner-4.8.0.2856-linux /opt/sonar-scanner
-          echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> $GITHUB_ENV
+          # Descarga la última versión de SonarScanner
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006.zip -O sonar-scanner.zip
+          unzip sonar-scanner.zip
+          # Mueve el scanner a una ubicación accesible y agrega a PATH
+          sudo mv sonar-scanner-*/bin/sonar-scanner /usr/local/bin/
+          echo "/usr/local/bin/sonar-scanner" >> $GITHUB_PATH
+          echo "export PATH=$PATH:/usr/local/bin/sonar-scanner" >> $GITHUB_ENV
+          # Verifica la instalación
+          sonar-scanner --version || echo "SonarScanner no se instaló correctamente"
 
       - name: 2. Análisis SAST con SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

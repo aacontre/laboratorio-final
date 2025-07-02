@@ -39,3 +39,12 @@ jobs:
               curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
             fi
             set -e
+
+      - name: Ejecutando SonarCloud
+        run: |
+            sonarqube \
+            -Dsonar.projectKey=${{ github.event.repository.name }} \
+            -Dsonar.organization=aacontre \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.branch.name=main

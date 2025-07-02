@@ -9,7 +9,8 @@ jobs:
   sonarcloud_analysis:
     name: SAST
     runs-on: ubuntu-latest # Usa el último runner de Ubuntu
-
+    env:
+      APP_PATH: 'src' # Asegúrate de que esta ruta apunte al directorio correcto de tu aplicación
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4

@@ -6,11 +6,8 @@ on:
       - feat-movie
 
 jobs:
-  sonarcloud_analysis:
-    name: SAST
+  SAST:
     runs-on: ubuntu-latest
-    env:
-      APP_PATH: 'src'
       
     steps:
       - name: Descargar repositorio
@@ -26,28 +23,19 @@ jobs:
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install setuptools wheel
-
-      - name: instalar SonarScanner
+        
+      - name: Validando existencia de proyecto en SonarCloud
+        id: validateProjectOnSonar
         run: |
-          # Descarga la última versión de SonarScanner
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006.zip -O sonar-scanner.zip
-          unzip sonar-scanner.zip
-          # Mueve el scanner a una ubicación accesible y agrega a PATH
-          sudo mv sonar-scanner-*/bin/sonar-scanner /usr/local/bin/
-          echo "/usr/local/bin/sonar-scanner" >> $GITHUB_PATH
-          echo "export PATH=$PATH:/usr/local/bin/sonar-scanner" >> $GITHUB_ENV
-          # Verifica la instalación
-          sonar-scanner --version || echo "SonarScanner no se instaló correctamente"
-
-      - name: 2. Análisis SAST con SonarCloud
-        uses: SonarSource/sonarqube-scan-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=laboratorio-final
-            -Dsonar.projectName="Laboratorio Final"
-            -Dsonar.organization=aacontre
-            -Dsonar.host.url=https://sonarcloud.io
+            set +e
+            curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=aacontre' -d 'visibility=public'
+            if [ $? -ne 0 ]; then
+              echo "Proyecto ya existe en Sonarcloud"
+              echo "::set-output name=proyectoExiste::1"
+            else
+              echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
+              
+              echo "Se establece rama main como rama por defecto"
+              curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
+            fi
+            set -e

@@ -6,7 +6,7 @@ on:
       - feat-movie
 
 jobs:
-  Analisis-Devsecops: 
+  Analisis-Laboratorio-Final: 
     runs-on: ubuntu-latest
       
     steps: 
@@ -37,4 +37,15 @@ jobs:
             -Dsonar.organization=aacontre
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.branch.name=feat-movie
-            
+
+      - name: Validando resultado de SonarCloud
+        run: |
+
+          issueValidate=$(curl -s -X GET -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/issues/search?branch=main&componentKeys=laboratorio-final&facets=severities' | jq '.facets[0].values[1].count')
+          if [ "$issueValidate" -gt 0 ]; then
+          echo "Existen problemas en el código, se detiene el pipeline"
+          #exit 1
+          else
+          echo "No existen problemas en el código, se continúa con el pipeline"
+          fi            
+

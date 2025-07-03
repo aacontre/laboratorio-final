@@ -36,4 +36,5 @@ jobs:
             -Dsonar.projectKey=aacontre_laboratorio-final 
             -Dsonar.organization=aacontre
             -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.branch.name=feat-movie
             

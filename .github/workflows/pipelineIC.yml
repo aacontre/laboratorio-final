@@ -72,7 +72,7 @@ jobs:
 
     - name: Ejecutar SCA
       run: |
-          safety check --full-report 
+          safety scan --full-report 
       #--output-file=safety-report.json
           
     

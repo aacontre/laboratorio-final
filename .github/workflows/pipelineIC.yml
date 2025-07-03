@@ -6,7 +6,7 @@ on:
       - feat-movie
 
 jobs:
-  Analisis-Laboratorio-Final: 
+  SAST:
     runs-on: ubuntu-latest
       
     steps: 
@@ -23,8 +23,7 @@ jobs:
       - name: Instalar dependencias 
         run: |
           python -m pip install --upgrade pip
-          # If you have a requirements.txt, uncomment the line below:
-          # pip install -r requirements.txt
+    
         
       - name: Ejecutando SonarCloud 
         uses: SonarSource/sonarqube-scan-action@master 
@@ -49,3 +48,25 @@ jobs:
           echo "No existen problemas en el código, se continúa con el pipeline"
           fi            
 
+ ####################################################################################################################################################################################################################################         
+
+  SCA:
+    needs: SAST
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Descargar repositorio 
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' 
+    
+    - name: Instalar dependencias 
+      run: |
+          python -m pip install --upgrade pip
+        # If you have a requirements.txt, uncomment the line below:
+        # pip install -r requirements.txt

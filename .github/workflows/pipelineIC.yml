@@ -70,9 +70,18 @@ jobs:
           python -m pip install --upgrade pip
         #--pip install safety
 
-    - name: Configurar Java para OWASP Dependency-Check
+    - name: Configurar Java para OWASP 
       uses: actions/setup-java@v4
       with:
           distribution: 'temurin' # Distribución recomendada de Java
           java-version: '17'   
     
+    - name: Ejecutar OWASP
+      uses: dependency-check/Dependency-Check-Action@main
+      id: depcheck # Asigna un ID para referenciar los outputs
+      with:
+        project: 'laboratorio-final' # Nombre de tu proyecto
+        path: '.' # Ruta donde se encuentra tu código para escanear
+        format: 'HTML,JSON' # Formatos de reporte deseados
+        args: '--scan bin --scan src' # Puedes ajustar los directorios a escanear
+            # --failOnCVSS 7 # Descomenta para fallar el pipeline si se encuentran vulnerabilidades con CVSS score >= 7

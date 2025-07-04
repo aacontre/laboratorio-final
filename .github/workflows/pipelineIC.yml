@@ -131,7 +131,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --tag jeanpro/usach-devsecops-v2:latest .
+          docker build --tag aacontre/laboratorio-finalv2:latest .
 
       - name: Docker Login
         uses: docker/login-action@v3.0.0
@@ -139,6 +139,6 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
- - name: Push Docker Image
-  run: |
-   docker push jeanpro/usach-devsecops-v2:latest
+      - name: Push Docker Image
+        run: |
+          docker push aacontre/laboratorio-finalv2:latest

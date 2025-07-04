@@ -60,64 +60,29 @@ jobs:
       with:
         fetch-depth: 0 
   
-    - name: Set up .NET 6.0
-      uses: actions/setup-dotnet@v3
-      with:
-          dotnet-version: '6.0.x'
-    
-    - name: Verify .NET installation
-      run: |
-            dotnet --list-runtimes
-            dotnet --info
-
     - name: Configurar Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.9' 
-    
-    - name: Install Python dependencies
+      
+    - name: Instalar dependencias del proyecto y Safety CLI
       run: |
-          pip install -r requirements.txt  
+              python -m pip install --upgrade pip 
+              pip install safety 
+              pip install -r requirements.txt 
+    
+    - name: Ejecutar Safety Scan (Análisis SCA Nativo Python)
+      env:
+        SAFETY_API_KEY: '${{ secrets.SAFETY_API_KEY }}' 
+      run: |
+        safety scan --full-report --output safety_report.json
           
-    - name: Set up Java 17 (LTS)
-      uses: actions/setup-java@v3
-      with:
-            java-version: '17'
-            distribution: 'temurin'
-         #   cache: 'gradle'
-  
-    - name: Verify Java installation
-      run: |
-            echo "JAVA_HOME: $JAVA_HOME"
-            java -version
-
-    - name: Install Dependency-Check
-      run: |
-          # Instalar versión más reciente directamente
-            DC_VERSION=8.4.0
-            curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v$DC_VERSION/dependency-check-$DC_VERSION-release.zip
-            unzip dependency-check-$DC_VERSION-release.zip
-            echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
-    
-    - name: Run Dependency-Check
-      run: |
-              dependency-check.sh \
-                --project "laboratorio-final-movie" \
-                --scan "." \
-                --format "XML" \
-                --out "./reports" \
-                --failOnCVSS 7 \
-                --disableNodeAudit \
-                --disableYarnAudit \
-                --disableAssembly \
-                --disableJar \
-                --disableBundleAudit \
-                --disableCentral \
-                --disableNuspec \
-                --disableNugetconf \
-                --disableComposer \
-                --disableNodeJS \
-                --disableNodeAudit \
-                --disableYarnAudit \
-                --disableRetireJS \
-                --enableExperimental
+          
+       ## - name: Subir Reporte Safety Scan
+          # Sube el reporte JSON generado por Safety como un artefacto de tu workflow.
+          # Esto te permite descargar y revisar los resultados de seguridad directamente
+          # desde la interfaz de GitHub Actions una vez que el pipeline haya terminado.
+         # uses: actions/upload-artifact@v4
+          #with:
+           # name: safety-scan-report # Nombre con el que aparecerá el artefacto en GitHub
+          ##  path: safety_report.json # La ruta al archivo de reporte generado por Safety

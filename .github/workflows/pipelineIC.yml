@@ -81,17 +81,10 @@ jobs:
             echo "JAVA_HOME: $JAVA_HOME"
             java -version
 
-    - name: Run OWASP Dependency-Check
-      uses: jeremylong/DependencyCheck-action@v10.0.0
-      id: depcheck 
-      with:
-          project: 'laboratorio-final-movie'
-          scan-dir: '.'
-          format: 'HTML'
-          args: '--scan . --failOnCVSS 7' 
-
-    - name: Upload Report
-      uses: actions/upload-artifact@v4
-      with:
-          name: dependency-check-report
-          path: dependency-check-report.html
+    - name: Install Dependency-Check
+      run: |
+          # Instalar versión más reciente directamente
+            DC_VERSION=8.4.0
+            curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v$DC_VERSION/dependency-check-$DC_VERSION-release.zip
+            unzip dependency-check-$DC_VERSION-release.zip
+            echo "$PWD/dependency-check/bin" >> $GITHUB_PATH

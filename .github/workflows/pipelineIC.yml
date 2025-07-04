@@ -70,10 +70,9 @@ jobs:
               pip install -r requirements.txt 
     
     - name: Ejecutar Safety Scan
-      env:
-        SAFETY_API_KEY: '${{ secrets.SAFETY_API_KEY }}' 
-      run: |
-         safety scan --full-report --output json > safety_report.json 
+      uses: pyupio/safety-action@v1
+      with:
+        api-key: ${{ secrets.SAFETY_API_KEY }}
           
           
        ## - name: Subir Reporte Safety Scan

@@ -82,7 +82,7 @@ jobs:
           scan-dir: '.'
           format: 'HTML'
           fail-on-cvss: '7.0'  # Falla si hay vulnerabilidades críticas
-          additional-arguments: '--disableNodeAudit --disableYarnAudit'  # Ignora Node.js
+          args: --failOnCVSS 7 --disableNodeAudit --disableYarnAudit
 
     - name: Upload Report
       uses: actions/upload-artifact@v4

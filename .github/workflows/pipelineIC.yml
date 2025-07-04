@@ -69,11 +69,17 @@ jobs:
       run: |
           pip install -r requirements.txt  
           
-    - name: Set up Java (requerido para Dependency-Check)
+    - name: Set up Java 17 (LTS)
       uses: actions/setup-java@v3
       with:
-          java-version: '11'
-          distribution: 'temurin'
+            java-version: '17'
+            distribution: 'temurin'
+            cache: 'gradle'
+  
+    - name: Verify Java installation
+      run: |
+            echo "JAVA_HOME: $JAVA_HOME"
+            java -version
 
     - name: Run OWASP Dependency-Check
       uses: dependency-check/Dependency-Check_Action@main

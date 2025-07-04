@@ -113,7 +113,6 @@ jobs:
                 --disableJar \
                 --disableBundleAudit \
                 --disableCentral \
-                --disableNexus \
                 --disableNuspec \
                 --disableNugetconf \
                 --disableComposer \

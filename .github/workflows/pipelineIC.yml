@@ -41,12 +41,12 @@ jobs:
         run: |
 
           issueValidate=$(curl -s -X GET -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/issues/search?branch=main&componentKeys=laboratorio-final&facets=severities' | jq '.facets[0].values[1].count')
-          if [ "$issueValidate" -gt 0 ]; then
-          echo "Existen problemas en el código, se detiene el pipeline"
+          #if [ "$issueValidate" -gt 0 ]; then
+          #echo "Existen problemas en el código, se detiene el pipeline"
           #exit 1
-          else
-          echo "No existen problemas en el código, se continúa con el pipeline"
-          fi            
+          #else
+          #echo "No existen problemas en el código, se continúa con el pipeline"
+          #fi            
 
  ####################################################################################################################################################################################################################################         
 
@@ -65,20 +65,27 @@ jobs:
       with:
         python-version: '3.9' 
     
-    - name: Instalar dependencias 
+    - name: Install Python dependencies
       run: |
-          python -m pip install --upgrade pip
-        #--pip install safety
-
-    - name: Configurar Java para OWASP 
-      uses: actions/setup-java@v4
+          pip install -r requirements.txt  
+          
+    - name: Set up Java (requerido para Dependency-Check)
+      uses: actions/setup-java@v3
       with:
-          distribution: 'temurin' # Distribución recomendada de Java
-          java-version: '17'   
-    
+          java-version: '11'
+          distribution: 'temurin'
+
     - name: Run OWASP Dependency-Check
       uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: 'Laboratorio-Final'
-        format: 'HTML'
-        fail_on_cvss: 7.0 
+          project: 'laboratorio-final-movie'
+          scan-dir: '.'
+          format: 'HTML'
+          fail-on-cvss: '7.0'  # Falla si hay vulnerabilidades críticas
+          additional-arguments: '--disableNodeAudit --disableYarnAudit'  # Ignora Node.js
+
+    - name: Upload Report
+      uses: actions/upload-artifact@v3
+      with:
+          name: dependency-check-report
+          path: dependency-check-report.html

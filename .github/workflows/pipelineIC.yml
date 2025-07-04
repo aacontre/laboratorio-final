@@ -6,7 +6,7 @@ on:
     branches: [ main, develop, feat-movie ]
 
 jobs:
-  BUILD:
+  GenerandoBuild:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Node.js
@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: '22.17.0'
 
-      - name: Checkout code
+      - name: Check del codigo
         uses: actions/checkout@v4
 
       - name: Instalar dependencias
@@ -24,9 +24,23 @@ jobs:
         run: |
           npm run build
 
-      - name: Upload build output
+      - name: Acualizando artefacto
         uses: actions/upload-artifact@master
         with:
           name: build-artifact
           path: ${{ github.workspace }}/.next
           include-hidden-files: true
+
+   SAST:
+      needs: GenerandoBuild
+      runs-on: ubuntu-latest
+      steps:
+       - name: Check del codigo
+         uses: actions/checkout@v2
+        
+       - name: Descarga de artefacto
+         uses: actions/download-artifact@master
+         with:
+           - name: build-artifact
+             path: ${{ github.workspace }}/.next
+             include-hidden-files: true

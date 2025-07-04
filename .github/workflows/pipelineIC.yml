@@ -76,12 +76,9 @@ jobs:
           distribution: 'temurin' # Distribución recomendada de Java
           java-version: '17'   
     
-    - name: Ejecutar OWASP
-      uses: jeremylong/Dependency-Check-Action@v10
-      id: depcheck # Asigna un ID para referenciar los outputs
+    - name: Run OWASP Dependency-Check
+      uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: 'laboratorio-final' # Nombre de tu proyecto
-        path: '.' # Ruta donde se encuentra tu código para escanear
-        format: 'HTML,JSON' # Formatos de reporte deseados
-        args: '--scan bin --scan src' # Puedes ajustar los directorios a escanear
-            # --failOnCVSS 7 # Descomenta para fallar el pipeline si se encuentran vulnerabilidades con CVSS score >= 7
+        project: 'Laboratorio-Final'
+        format: 'HTML'
+        fail_on_cvss: 7.0 

@@ -31,7 +31,7 @@ jobs:
           path: ${{ github.workspace }}/.next
           include-hidden-files: true
 
-   SAST:
+  SAST:
       needs: GenerandoBuild
       runs-on: ubuntu-latest
       steps:
@@ -41,6 +41,21 @@ jobs:
        - name: Descarga de artefacto
          uses: actions/download-artifact@master
          with:
-           - name: build-artifact
-             path: ${{ github.workspace }}/.next
-             include-hidden-files: true
+             - name: build-artifact
+              path: ${{ github.workspace }}/.next
+              include-hidden-files: true
+
+       - name: Validando existencia del proyecto en sonar
+         run: |
+               set +e
+               curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=laboratorio-finalv2' -d 'project=laboratorio-finalv2' -d 'organization=aacontre' -d 'visibility=public'
+               if [ $? -ne 0 ]; then
+                 echo "Proyecto ya existe en Sonarcloud"
+                 echo "::set-output name=proyectoExiste::1"
+               else
+                 echo "Proyecto laboratorio-finalv2 creado exitosamente en Sonarcloud"
+               
+                 echo "Se establece rama main como rama por defecto"
+                 curl -X POST -u "${{ secrets.SONAR_TOKEN }}:" 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=laboratorio-finalv2'
+               fi
+               set -e

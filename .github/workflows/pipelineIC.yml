@@ -1,9 +1,9 @@
 name: Pipeline Laboratorio Final
 on:
   push:
-    branches: [ main, develop, feature/* ]
+    branches: [ main, develop, feat-movie ]
   pull_request:
-    branches: [ main, develop, feature/* ]
+    branches: [ main, develop, feat-movie ]
 
 jobs:
   BUILD:

@@ -88,3 +88,7 @@ jobs:
             curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v$DC_VERSION/dependency-check-$DC_VERSION-release.zip
             unzip dependency-check-$DC_VERSION-release.zip
             echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
+    
+    - name: Ejecutar Dependency-Check
+      run: |
+          dependency-check --project "Laboratorio Final" --scan . --format "ALL" --out . --failOnCVSS 7.0 --cveUrl https://services.nvd.nist.gov/rest/json/cves/1.0/

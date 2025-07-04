@@ -109,4 +109,16 @@ jobs:
                 --failOnCVSS 7 \
                 --disableNodeAudit \
                 --disableYarnAudit \
+                --disableAssembly \
+                --disableJar \
+                --disableBundleAudit \
+                --disableCentral \
+                --disableNexus \
+                --disableNuspec \
+                --disableNugetconf \
+                --disableComposer \
+                --disableNodeJS \
+                --disableNodeAudit \
+                --disableYarnAudit \
+                --disableRetireJS \
                 --enableExperimental

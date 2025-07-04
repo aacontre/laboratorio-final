@@ -41,9 +41,9 @@ jobs:
        - name: Descarga de artefacto
          uses: actions/download-artifact@master
          with:
-             - name: build-artifact
-              path: ${{ github.workspace }}/.next
-              include-hidden-files: true
+             name: build-artifact
+             path: ${{ github.workspace }}/.next
+             include-hidden-files: true
 
        - name: Validando existencia del proyecto en sonar
          run: |

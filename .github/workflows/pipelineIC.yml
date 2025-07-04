@@ -76,21 +76,21 @@ jobs:
                  projectKey="laboratorio-finalv2"
                  branchName="main"
              
-SCA:
-    needs: BUILD
+  SCA:
+    needs: SAST
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Check del codigo
         uses: actions/checkout@v2
-
-      - name: Download build artifact
+       
+      - name: Descarga de artefacto
         uses: actions/download-artifact@master
         with:
-          name: build-artifact
-          path: ${{ github.workspace }}/.next
-          include-hidden-files: true
+            name: build-artifact
+            path: ${{ github.workspace }}/.next
+            include-hidden-files: true
 
-      - name: Dependency Check
+      - name: Ejecutando Owasp
         uses: dependency-check/Dependency-Check_Action@1.1.0
         env:
           JAVA_HOME: /opt/jdk
@@ -103,12 +103,12 @@ SCA:
             --failOnCVSS 7
             --enableRetired
 
-      - name: Upload Dependency Check Report
+      - name: Subiendo resulado de Owasp
         uses: actions/upload-artifact@master
         with:
           name: dependecy-check-report
           path: ${{ github.workspace }}/reports
 
-      - name: Validar resultado Dependency Check
+      - name: Validar resulado de Owasp
         run: |
           report="reports/dependency-check-report.json"

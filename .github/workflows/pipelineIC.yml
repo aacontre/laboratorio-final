@@ -68,8 +68,7 @@ jobs:
     - name: Instalar dependencias del proyecto y Safety CLI
       run: |
               python -m pip install --upgrade pip 
-              pip install safety==2.3.5  
-              pip install --upgrade safety "pydantic>=2.0.0" 
+              pip install safety 
               pip install -r requirements.txt 
     
     - name: Ejecutar Safety Scan (Análisis SCA Nativo Python)

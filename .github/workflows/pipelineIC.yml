@@ -94,7 +94,7 @@ jobs:
               dependency-check.sh \
                 --project "laboratorio-final-movie" \
                 --scan "." \
-                --format "HTML" \
+                --format "XML" \
                 --out "./reports" \
                 --failOnCVSS 7 \
                 --disableNodeAudit \

@@ -89,6 +89,14 @@ jobs:
             unzip dependency-check-$DC_VERSION-release.zip
             echo "$PWD/dependency-check/bin" >> $GITHUB_PATH
     
-    - name: Ejecutar Dependency-Check
+    - name: Run Dependency-Check
       run: |
-          dependency-check --project "Laboratorio Final" --scan . --format "ALL" --out . --failOnCVSS 7.0 --cveUrl https://services.nvd.nist.gov/rest/json/cves/1.0/
+              dependency-check.sh \
+                --project "laboratorio-final-movie" \
+                --scan "." \
+                --format "HTML" \
+                --out "./reports" \
+                --failOnCVSS 7 \
+                --disableNodeAudit \
+                --disableYarnAudit \
+                --enableExperimental

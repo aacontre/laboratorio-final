@@ -149,16 +149,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Check del codigo
-      uses: actions/checkout@v2
+      - name: Docker Login
+        uses: docker/login-action@v3.0.0
+        with:
+              username: ${{ secrets.DOCKER_USER }}
+              password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: Descarga de artefacto
-      uses: actions/download-artifact@master
-      with:
-            name: build-artifact
-            path: ${{ github.workspace }}/.next
-            include-hidden-files: true
-
-
+      - name: Docker Pull
+        run: |
+              docker pull aacontre/laboratorio-finalv2:latest
+    
+      - name: Ejecutando Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+              image-ref: aacontre/laboratorio-finalv2:latest
+              format: 'table'
+              exit-code: '1'
+              severity: 'CRITICAL,HIGH,MEDIUM'
 
 

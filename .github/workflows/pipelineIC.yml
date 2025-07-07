@@ -77,7 +77,7 @@ jobs:
                  branchName="main"
              
   AnalisisSCA:
-    needs:   GenerandoBuild
+    needs:   AnalisisSAST
     runs-on: ubuntu-latest
     steps:
       - name: Check del codigo
@@ -115,7 +115,7 @@ jobs:
 
 
   GenerandoImagenDocker:
-    needs: GenerandoBuild
+    needs: AnalisisSCA
     runs-on: ubuntu-latest
     steps:
     
@@ -145,7 +145,7 @@ jobs:
 
     
   EjecutandoImageSecurity:
-    needs: GenerandoBuild
+    needs: GenerandoImagenDocker
     runs-on: ubuntu-latest
     steps:
 
@@ -170,7 +170,7 @@ jobs:
       
 
   AnalisisDAST:
-    needs: GenerandoBuild
+    needs: EjecutandoImageSecurity
     runs-on: self-hosted
     steps:
       - name: LAN Docker
@@ -186,7 +186,27 @@ jobs:
               --name reddit-clone-yt \
               -p 3000:3000 \
               aacontre/laboratorio-finalv2:latest
+      
+      - name: Esperando a que la app este lista
+        run: |
+              echo "Esperando a que la app este lista..."
+              sleep 30  # Ajusta el tiempo según sea necesario
+              
+      - name: Ejecutando OWASP ZAP
+        run: |
+              docker run --rm \
+              --network zap-net \
+              -t owasp/zap2docker-stable zap-baseline.py \
+              -J report_json.json -w report_md.md -r report_html.html \
+              -t http://reddit-clone-yt:3000/ \
+              -I  
 
+      - name: Subiendo reporte OWASP ZAP
+        uses: actions/upload-artifact@v2
+        with:
+              name: zap-reports
+              path: ${{ github.workspace }}
+              #retention-days: 7
      ## - name: OWASP 
      ##   run: |
      ##     --network zap-net \

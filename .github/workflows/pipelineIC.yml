@@ -31,7 +31,7 @@ jobs:
           path: ${{ github.workspace }}/.next
           include-hidden-files: true
 
-  SAST:
+  AnalisiSAST:
       needs: GenerandoBuild
       runs-on: ubuntu-latest
       steps:
@@ -76,8 +76,8 @@ jobs:
                  projectKey="laboratorio-finalv2"
                  branchName="main"
              
-  SCA:
-    needs: SAST
+  AnalisisSCA:
+    needs: AnalisiSAST
     runs-on: ubuntu-latest
     steps:
       - name: Check del codigo
@@ -115,7 +115,7 @@ jobs:
 
 
   GenerandoImagenDocker:
-    needs: SCA
+    needs: AnalisisSCA
     runs-on: ubuntu-latest
     steps:
     
@@ -167,4 +167,32 @@ jobs:
               exit-code: '0'
               ##---severity: 'CRITICAL,HIGH,MEDIUM'
 
+      
 
+  AnalisiDAST:
+    needs: EjecutandoImageSecurity
+    runs-on: self-hosted
+    steps:
+      - name: LAN Docker
+        run: |
+              docker network rm zap-net || true
+              docker network create zap-net
+            
+      - name: Desplegando app en Docker
+        run: |
+              docker run -d \
+              --rm \
+              --network zap-net \
+              --name reddit-clone-yt \
+              -p 3000:3000 \
+              aacontre/laboratorio-finalv2:latest
+
+      - name: OWASP 
+        run: |
+          --network zap-net \
+            docker run --rm \
+            ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+            -v ${{ github.workspace }}:/zap/wrk/:rw \
+            -J report_json.json -w report_md.md -r report_html.html \
+            -t http://reddit-clone-yt:3000/ \
+            -I

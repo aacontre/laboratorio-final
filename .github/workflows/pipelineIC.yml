@@ -238,12 +238,48 @@ jobs:
               name: zap-reports
               path: ${{ github.workspace }}
               #retention-days: 7
-     ## - name: OWASP 
-     ##   run: |
-     ##     --network zap-net \
-     ##       docker run --rm \
-     ##       ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-     ##      
-     ##       -J report_json.json -w report_md.md -r report_html.html \
-     ##       -t http://reddit-clone-yt:3000/ \
-     ##       -I
+     
+      - name: OWASP 
+        run: |
+              --network zap-net \
+                docker run --rm \
+                ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+          
+               -J report_json.json -w report_md.md -r report_html.html \
+               -t http://reddit-clone-yt:3000/ \
+               -I
+
+
+
+      - name: Mover reportes de ZAP al directorio reports
+        run: |
+            mkdir -p reports
+            mv report_*.json reports/ || true
+            mv report_*.md reports/ || true
+            mv report_*.html reports/ || true
+
+      - name: Upload OWASP ZAP Report
+        uses: actions/upload-artifact@master
+        with:
+             name: owasp-zap-report
+             path: ${{ github.workspace }}/reports
+
+      - name: Validar resultado de OWASP ZAP
+        run: |
+          if [ ! -f report_json.json ]; then
+          echo "Mala suerte ..... SI se encontraron vulnerabilidades . El pipeline no sigue..."
+          exit 1
+          fi
+
+          highAlerts=$(jq '[.site[].alerts[] | select(.riskdesc | test("High"))] | length' report_json.json)
+          mediumAlerts=$(jq '[.site[].alerts[] | select(.riskdesc | test("Medium"))] | length' report_json.json)
+
+          echo "Alertas High: $highAlerts"
+          echo "Alertas Medium: $mediumAlerts"
+
+          if [ "$highAlerts" -gt 0 ] || [ "$mediumAlerts" -gt 0 ]; then
+          echo "Se encontraron vulnerabilidades críticas o medias en OWASP ZAP. Deteniendo el pipeline..."
+          exit 1
+          else
+          echo "Tienes mucha suerte .... NO se encontraron vulnerabilidades""
+          fi

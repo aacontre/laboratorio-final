@@ -89,7 +89,7 @@ jobs:
             fi
              
   AnalisisSCA:
-    needs:   GenerandoBuild
+    needs: GenerandoBuild
     runs-on: ubuntu-latest
     steps:
       - name: Check del codigo
@@ -144,7 +144,6 @@ jobs:
             echo "Tienes mucha suerte .... NO se encontraron vulnerabilidades"
           fi
 
-
   GenerandoImagenDocker:
     needs: GenerandoBuild
     runs-on: ubuntu-latest
@@ -156,9 +155,9 @@ jobs:
       - name: Descarga de artefacto
         uses: actions/download-artifact@master
         with:
-              name: build-artifact
-              path: ${{ github.workspace }}/.next
-             # include-hidden-files: true
+             name: build-artifact
+             path: ${{ github.workspace }}/.next
+             include-hidden-files: true
 
       - name: Build Docker Image
         run: |

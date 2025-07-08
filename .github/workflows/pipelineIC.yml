@@ -73,13 +73,14 @@ jobs:
        
        - name: Extrayendo analisis desde SonarCloud
          run: |
-              projectKey="laboratorio-finalv2"
-              branchName="main" 
-              issueCount=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-                "https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branchName}&types=VULNERABILITY&severities=BLOCKER,CRITICAL,MAJOR" \
-                | jq '.total')
+        
+           projectKey="laboratorio-finalv2"
+           branchName="main" 
 
-          echo "Se encontraron vulneradidades críticas/altas/medias: $issueCount"
+           issueCount=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+           "https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branchName}&types=VULNERABILITY&severities=BLOCKER,CRITICAL,MAJOR" \
+             | jq '.total')
+            echo "Se encontraron vulneradidades críticas/altas/medias: $issueCount"
              
   AnalisisSCA:
     needs:   GenerandoBuild

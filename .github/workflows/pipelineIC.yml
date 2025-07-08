@@ -27,9 +27,8 @@ jobs:
       - name: Acualizando artefacto
         uses: actions/upload-artifact@master
         with:
-          name: build-artifact
-          path: ${{ github.workspace }}/.next
-          include-hidden-files: true
+           name: build-artifact
+           path: ${{ github.workspace }}/.next
 
   AnalisisSAST:
       needs: GenerandoBuild
@@ -43,7 +42,7 @@ jobs:
          with:
              name: build-artifact
              path: ${{ github.workspace }}/.next
-             include-hidden-files: true
+              include-hidden-files: true
 
        - name: Validando existencia del proyecto en sonar
          run: |
@@ -81,6 +80,13 @@ jobs:
            "https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branchName}&types=VULNERABILITY&severities=BLOCKER,CRITICAL,MAJOR" \
              | jq '.total')
             echo "Se encontraron vulneradidades críticas/altas/medias: $issueCount"
+
+               if [ "$issueCount" -gt 0 ]; then
+                  echo "Se encontraron vulnerabilidades críticas, altas o medias. Deteniendo el pipeline..."
+            exit 1
+            else
+            echo "No se encontraron vulnerabilidades ..."
+            fi
              
   AnalisisSCA:
     needs:   GenerandoBuild
@@ -118,6 +124,25 @@ jobs:
       - name: Validar resulado de Owasp
         run: |
           report="reports/dependency-check-report.json"
+          
+          if [ ! -f "$report" ]; then
+            echo "Falla el análisis SCA."
+            exit 1
+          fi
+
+            critical=$(jq '[.dependencies[].vulnerabilities[]? | select(.severity == "high")] | length' "$report")
+            high=$(jq '[.dependencies[].vulnerabilities[]? | select(.severity == "high")] | length' "$report")
+            medium=$(jq '[.dependencies[].vulnerabilities[]? | select(.severity == "moderate")] | length' "$report")
+
+            echo "Vulnerabilidades críticas/altas: $critical"
+            echo "Vulnerabilidades medias: $medium"
+
+          if [ "$critical" -gt 0 ] || [ "$high" -gt 0 ] || [ "$medium" -gt 0 ]; then
+            echo "Mala suerte ..... SI se encontraron vulnerabilidades . El pipeline no sigue..."
+            exit 1
+          else
+            echo "Tienes mucha suerte .... NO se encontraron vulnerabilidades"
+          fi
 
 
   GenerandoImagenDocker:

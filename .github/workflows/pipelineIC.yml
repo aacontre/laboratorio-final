@@ -29,6 +29,7 @@ jobs:
         with:
            name: build-artifact
            path: ${{ github.workspace }}/.next
+           include-hidden-files: true
 
   AnalisisSAST:
       needs: GenerandoBuild

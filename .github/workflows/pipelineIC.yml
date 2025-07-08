@@ -73,11 +73,16 @@ jobs:
        
        - name: Extrayendo analisis desde SonarCloud
          run: |
-                 projectKey="laboratorio-finalv2"
-                 branchName="main"
+              projectKey="laboratorio-finalv2"
+              branchName="main" 
+              issueCount=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+                "https://sonarcloud.io/api/issues/search?componentKeys=${projectKey}&branch=${branchName}&types=VULNERABILITY&severities=BLOCKER,CRITICAL,MAJOR" \
+                | jq '.total')
+
+          echo "Se encontraron vulneradidades críticas/altas/medias: $issueCount"
              
   AnalisisSCA:
-    needs:   AnalisisSAST
+    needs:   GenerandoBuild
     runs-on: ubuntu-latest
     steps:
       - name: Check del codigo
@@ -115,7 +120,7 @@ jobs:
 
 
   GenerandoImagenDocker:
-    needs: AnalisisSCA
+    needs: GenerandoBuild
     runs-on: ubuntu-latest
     steps:
     
@@ -164,13 +169,13 @@ jobs:
         with:
               image-ref: aacontre/laboratorio-finalv2:latest
               format: 'table'
-              exit-code: '0'
-              ##---severity: 'CRITICAL,HIGH,MEDIUM'
+              exit-code: '1'
+              severity: 'CRITICAL,HIGH,MEDIUM'
 
       
 
   AnalisisDAST:
-    needs: EjecutandoImageSecurity
+    needs: GenerandoImagenDocker
     runs-on: self-hosted
     steps:
       - name: LAN Docker

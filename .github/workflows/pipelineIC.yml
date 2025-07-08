@@ -42,7 +42,7 @@ jobs:
          with:
              name: build-artifact
              path: ${{ github.workspace }}/.next
-              include-hidden-files: true
+           
 
        - name: Validando existencia del proyecto en sonar
          run: |
